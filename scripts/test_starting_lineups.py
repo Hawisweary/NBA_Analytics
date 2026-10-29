@@ -31,3 +31,13 @@ starting_lineups = get_starting_lineups(players)
 
 for team, lineup in starting_lineups.items():
     print(team, lineup)
+
+dal_players = players[
+    players['teamTricode'] == 'DAL'
+]
+
+name_to_id_series = dal_players.set_index("familyName")["personId"]
+
+name_to_id = name_to_id_series.to_dict()
+
+print(name_to_id)
