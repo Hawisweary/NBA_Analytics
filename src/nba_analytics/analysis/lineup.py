@@ -22,6 +22,21 @@ def get_starting_lineups(players):
 
     return lineups
 
+# Extract the dictionary of the team players
+def build_name_to_id(players, team):
+    team_players = players[players['teamTricode'] == team]
+    if team_players['familyName'].duplicated().any():
+        raise ValueError(f"Duplicate familyName detected for {team}")
+    name_to_id_series  = team_players.set_index('familyName')['personId']
+    name_to_id = name_to_id_series.to_dict()
+    normalized_name_to_id = {
+        normalize_name(name): player_id
+        for name, player_id in name_to_id.items()
+    }
+    if len(normalized_name_to_id) != len(name_to_id):
+        raise ValueError("Name collision detected")
+    return normalized_name_to_id
+
 def parse_substitution(description):
     # The format of description is "SUB: A FOR B"
     parts = description.split(" FOR ")
@@ -30,6 +45,11 @@ def parse_substitution(description):
 
     return (player_in, player_out)
 
+def normalize_name(name):
+    # Normalize the name to remove accents and special characters
+    import unicodedata
+    normalized = unicodedata.normalize("NFKD", name)
+    return "".join(c for c in normalized if not unicodedata.category(c) == "Mn")
 
 # Track the current lineup for each team
 class LineupTracker:

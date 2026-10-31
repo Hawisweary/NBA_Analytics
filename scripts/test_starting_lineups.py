@@ -1,4 +1,5 @@
 from nba_api.stats.endpoints import boxscoretraditionalv3
+from nba_analytics.analysis.lineup import build_name_to_id
 
 GAME_ID = "0022600091"
 
@@ -41,3 +42,9 @@ name_to_id_series = dal_players.set_index("familyName")["personId"]
 name_to_id = name_to_id_series.to_dict()
 
 print(name_to_id)
+
+dal_name_to_id = build_name_to_id(players, "DAL")
+hou_name_to_id = build_name_to_id(players, "HOU")
+
+print("DAL:", dal_name_to_id)
+print("HOU:", hou_name_to_id)
