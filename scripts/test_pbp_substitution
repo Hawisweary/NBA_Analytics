@@ -1,0 +1,36 @@
+from nba_api.stats.endpoints import playbyplayv3
+from nba_analytics.analysis.lineup import parse_substitution
+
+GAME_ID = "0022600091"
+
+pbp = playbyplayv3.PlayByPlayV3(
+    game_id=GAME_ID,
+    start_period=1,
+    end_period=4
+)
+
+pbp_df = pbp.play_by_play.get_data_frame()
+
+print("Total events:", len(pbp_df))
+
+subs = pbp_df[
+    pbp_df['actionType'] == "Substitution"
+]
+
+print("Total substitutions:", len(subs))
+
+print(
+    subs[["period", "clock", "teamTricode", "description"]].head(10)
+)
+
+for index,row in subs.iterrows():
+    description = row['description']
+    player_in, player_out = parse_substitution(description)
+    team = row['teamTricode']
+    if team == "DAL":
+        name_to_id = 
+    elif team == "HOU":
+        name_to_id = __________
+    else:
+        raise ValueError(f"Unknown team: {team}")
+    print(player_in, player_out)

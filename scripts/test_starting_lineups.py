@@ -48,3 +48,6 @@ hou_name_to_id = build_name_to_id(players, "HOU")
 
 print("DAL:", dal_name_to_id)
 print("HOU:", hou_name_to_id)
+
+assert hou_name_to_id['Bogdanovic'] == 203992
+assert dal_name_to_id['Cisse'] == 1630619
