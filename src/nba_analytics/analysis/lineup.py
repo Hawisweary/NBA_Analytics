@@ -74,3 +74,30 @@ class LineupTracker:
         # Return an immutable snapshot of the current lineup
         # Here we use frozenset to ensure that the returned lineup cannot be modified
         return frozenset(self.on_court)
+
+def infer_quarter_starters(quarter_subs):
+    seen_players = set()
+    quarter_starters = set()
+
+    for index, row in quarter_subs.iterrows():
+        player_in, player_out = parse_substitution(row["description"])
+
+        if player_out not in seen_players:
+            quarter_starters.add(player_out)
+
+        seen_players.add(player_in)
+        seen_players.add(player_out)
+
+    return quarter_starters
+
+def get_lineup_at_time(rotation_df, time):
+    active_players = rotation_df[
+        (rotation_df["IN_TIME_REAL"] <= time) &
+        (rotation_df["OUT_TIME_REAL"] > time)
+    ]
+
+    player_ids = active_players["PERSON_ID"].tolist()
+    
+    lineup = frozenset(player_ids)
+
+    return lineup
